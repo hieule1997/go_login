@@ -1,0 +1,4 @@
+MongoURI       = "mongodb://localhost:27017"
+DATABASE_NAME  = "go_jwt"
+JWT_SECRET_KEY = "secret-key"
+EXPIRAION_TIME = 60
