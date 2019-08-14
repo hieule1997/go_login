@@ -18,6 +18,9 @@ type UserForm struct {
 	Fullname string   `json:"fullname" bson:"fullname"`
 	Role     RoleForm `json:"role" bson:"role"`
 }
+type UpdateUserForm struct{
+	Fullname string   `json:"fullname" bson:"fullname"`
+}
 var dbConnect = db.NewConnection()
 var UserCollection = dbConnect.Use(constants.MONGO_COLLECTION_USER)
 
@@ -37,4 +40,16 @@ func Create(newUser UserForm) error{
 	newUser.ID =utils.GenUUID()
 	err := UserCollection.Insert(&newUser)
 	return err
+}
+func FindById(id string) (UserForm, error) {
+	document := UserForm{}
+	err := UserCollection.Find(bson.M{"id": id}).One(&document)
+	return document, err
+}
+func UpdateUserById(id string, updateData UpdateUserForm) (UserForm, error) {
+	change := bson.M{"$set": bson.M{"fullname": updateData.Fullname}}
+	query := bson.M{"id": id}
+	err := UserCollection.Update(query, change)
+	user, _ := FindById(id)
+	return user, err
 }
